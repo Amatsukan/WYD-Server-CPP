@@ -17,11 +17,6 @@ function Clean-BuildDirectory {
 }
 
 # --- Main Execution ---
-try {
-    $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-    Clean-BuildDirectory -scriptDir $scriptDir
-}
-catch {
-    Write-Error $_.Exception.Message
-    exit 1
-}
+$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+Clean-BuildDirectory -scriptDir $scriptDir
+exit 0

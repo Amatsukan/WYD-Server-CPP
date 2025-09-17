@@ -25,11 +25,9 @@ try {
     Write-Host "--- Running Clean Script ---" -ForegroundColor Yellow
     Invoke-Script -scriptPath $cleanScript
     
-    Write-Host ""
     Write-Host "--- Running Build Script ---" -ForegroundColor Yellow
     Invoke-Script -scriptPath $buildScript
 
-    Write-Host ""
     Write-Host "Rebuild completed successfully." -ForegroundColor Green
 }
 catch {

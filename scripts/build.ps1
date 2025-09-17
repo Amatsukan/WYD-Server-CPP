@@ -29,16 +29,16 @@ function Enter-BuildDirectory {
 # Function to run CMake
 function Invoke-CMake {
     Write-Host "Running CMake..."
-    cmake .. -G "MinGW Makefiles"
+    cmake .. -G "Visual Studio 17 2022" -A x64
     if ($LASTEXITCODE -ne 0) {
         throw "CMake configuration failed."
     }
 }
 
-# Function to run the compiler (make)
-function Invoke-Make {
-    Write-Host "Running mingw32-make..."
-    mingw32-make
+# Function to run the compiler (msbuild)
+function Invoke-Build {
+    Write-Host "Running msbuild..."
+    cmake --build . --config Release
     if ($LASTEXITCODE -ne 0) {
         throw "Build failed."
     }
@@ -53,7 +53,7 @@ try {
     Initialize-Environment -scriptDir $scriptDir
     Enter-BuildDirectory -scriptDir $scriptDir
     Invoke-CMake
-    Invoke-Make
+    Invoke-Build
 
     Write-Host "Build completed successfully." -ForegroundColor Green
 }
