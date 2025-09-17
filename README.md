@@ -21,56 +21,59 @@ This separation of concerns allows for better scalability and maintainability.
 
 ## Compilation
 
-The recommended method for compiling this project is by using the provided PowerShell scripts, which automate the entire process.
+The recommended method for compiling this project is by using the provided PowerShell scripts, which automate the entire process using CMake and MSVC (the Microsoft Visual C++ compiler).
+
+### Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+*   [**Visual Studio 2022**](https://visualstudio.microsoft.com/downloads/): Make sure to include the **"Desktop development with C++"** workload during installation.
+*   [**CMake**](https://cmake.org/download/): Ensure it is added to your system's PATH.
+
+---
 
 ### Method 1: PowerShell Scripts (Recommended)
 
-This is the easiest and most reliable way to build the server.
+This is the easiest and most reliable way to build the server. The scripts will use CMake to generate a Visual Studio solution inside the `build` directory and then compile it.
 
-1.  **Install Dependencies:**
-    *   [**CMake**](https://cmake.org/download/)
-    *   **MinGW-w64** (it's recommended to install it via [MSYS2](https://www.msys2.org/))
+Open a PowerShell terminal in the root of the repository and use the following commands:
 
-2.  **Ensure MinGW is in your PATH:**
-    *   Before running the build scripts, make sure that the `bin` directory of your MinGW-w64 installation (which contains `mingw32-make.exe`, `g++.exe`, etc.) is included in your system's `PATH` environment variable.
+*   **To do a full rebuild (cleans, generates, and builds):**
+    ```powershell
+    ./scripts/rebuild.ps1
+    ```
+*   **To build (if you haven't changed CMake files):**
+    ```powershell
+    ./scripts/build.ps1
+    ```
+*   **To clean the build directory:**
+    ```powershell
+    ./scripts/clean.ps1
+    ```
 
-3.  **Run the Scripts:**
-    Open a PowerShell terminal in the root of the repository and use the following commands:
+---
 
-    *   **To do a full rebuild (recommended):**
-        ```powershell
-        ./scripts/rebuild.ps1
-        ```
-    *   **To only build (if you haven't changed CMake files):**
-        ```powershell
-        ./scripts/build.ps1
-        ```
-    *   **To only clean the build directory:**
-        ```powershell
-        ./scripts/clean.ps1
-        ```
+### Method 2: Manual Compilation with CMake
 
-### Method 2: Manual Compilation
+If you prefer to build manually, you can use CMake directly to generate the project files and then compile them.
 
-If you prefer to build manually or the scripts do not work for your environment, you can use the traditional methods.
+1.  Open a terminal (like the Developer Command Prompt for VS 2022 or PowerShell).
+2.  Navigate to the root of this repository.
+3.  Run the following commands:
 
-#### Visual Studio (Legacy)
-
-1.  Install **Visual Studio** (the project was originally created with VS 2015, but newer versions should work). Make sure to include the **"Desktop development with C++"** workload.
-2.  Open the `W2PP Code Project.sln` file in the root of the repository.
-3.  Build the solution.
-
-#### CMake / MinGW
-
-1.  Ensure your MinGW `bin` directory is in your system's PATH.
-2.  Open a terminal, navigate to the root of this repository and run the following commands:
     ```sh
+    # Create a build directory
     mkdir build
     cd build
-    cmake .. -G "MinGW Makefiles"
-    mingw32-make
+
+    # Generate the Visual Studio solution
+    cmake .. -G "Visual Studio 17 2022" -A x64
+
+    # Build the project
+    cmake --build . --config Release
     ```
-    > **Note:** If you have previously run CMake in this directory with a different generator (like Visual Studio), you must delete the `build` directory before running the `cmake` command again.
+
+4.  Alternatively, after running the first `cmake` command, you can open the generated `WYD-Server.sln` file inside the `build` directory with Visual Studio and build the solution from there.
 
 ---
 
@@ -83,7 +86,7 @@ Pull requests are welcome! To maintain consistency, please try to follow the exi
 *   **Original Decompilation & Development:**
     *   Klafke
     *   TheHouse
-*   **Build System Modernization (CMake/MinGW):**
+*   **Build System Modernization (CMake/MSVC):**
     *   Amatsukan
 
 ## License
