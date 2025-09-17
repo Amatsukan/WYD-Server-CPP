@@ -1,48 +1,68 @@
-# Get the script's directory
-$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+# This script configures and builds the project.
 
-# Set the project root, which is one level above the scripts directory
-$projectRoot = Resolve-Path -Path (Join-Path $scriptDir "..")
+# Function to source config and set up the environment
+function Initialize-Environment {
+    param($scriptDir)
 
-# Define the build directory
-$buildDir = Join-Path $projectRoot "build"
-
-# Create the build directory if it doesn't exist
-if (-not (Test-Path $buildDir)) {
-    Write-Host "Creating build directory: $buildDir"
-    New-Item -Path $buildDir -ItemType Directory
+    $configPath = Join-Path $scriptDir "config.ps1"
+    if (-not (Test-Path $configPath)) {
+        throw "Configuration file not found: $configPath. Please ensure it exists in the scripts directory."
+    }
+    . $configPath # Source the config file
 }
 
-# Set the location to the build directory
-Set-Location $buildDir
+# Function to prepare the build directory
+function Enter-BuildDirectory {
+    param($scriptDir)
 
-# Define CMake arguments
-# Note: If your MinGW installation is in a different path, update it here.
-$cmakeArgs = @(
-    "..",
-    "-G `"MinGW Makefiles`"",
-    "-D CMAKE_C_COMPILER=`"C:/msys64/mingw64/bin/gcc.exe`"",
-    "-D CMAKE_CXX_COMPILER=`"C:/msys64/mingw64/bin/g++.exe`""
-)
+    $projectRoot = Resolve-Path -Path (Join-Path $scriptDir "..")
+    $buildDir = Join-Path $projectRoot "build"
 
-# Run CMake
-Write-Host "Running CMake..."
-cmake $cmakeArgs
+    if (-not (Test-Path $buildDir)) {
+        Write-Host "Creating build directory: $buildDir"
+        New-Item -Path $buildDir -ItemType Directory
+    }
 
-# Check if CMake was successful
-if ($LASTEXITCODE -ne 0) {
-    Write-Error "CMake configuration failed."
+    Set-Location $buildDir
+}
+
+# Function to run CMake
+function Invoke-CMake {
+    Write-Host "Running CMake..."
+    cmake .. -G "MinGW Makefiles"
+    if ($LASTEXITCODE -ne 0) {
+        throw "CMake configuration failed."
+    }
+}
+
+# Function to run the compiler (make)
+function Invoke-Make {
+    Write-Host "Running mingw32-make..."
+    mingw32-make
+    if ($LASTEXITCODE -ne 0) {
+        throw "Build failed."
+    }
+}
+
+# --- Main Execution ---
+$startDir = Get-Location
+
+try {
+    $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+    
+    Initialize-Environment -scriptDir $scriptDir
+    Enter-BuildDirectory -scriptDir $scriptDir
+    Invoke-CMake
+    Invoke-Make
+
+    Write-Host "Build completed successfully." -ForegroundColor Green
+}
+catch {
+    Write-Error $_.Exception.Message
+    # Exit with a non-zero code to indicate failure, which can be caught by other scripts.
     exit 1
 }
-
-# Run mingw32-make
-Write-Host "Running mingw32-make..."
-mingw32-make
-
-# Check if make was successful
-if ($LASTEXITCODE -ne 0) {
-    Write-Error "Build failed."
-    exit 1
+finally {
+    Write-Host "Returning to original directory: $startDir"
+    Set-Location $startDir
 }
-
-Write-Host "Build completed successfully."
