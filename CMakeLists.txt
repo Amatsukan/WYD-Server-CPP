@@ -3,6 +3,9 @@
 cmake_minimum_required(VERSION 3.10)
 project(WYD-Server)
 
+# Desativa os avisos de segurança do CRT da Microsoft (ex: para fopen, strcpy)
+add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
+
 # Define o padrão C++ para C++11
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
