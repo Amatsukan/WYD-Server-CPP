@@ -89,7 +89,7 @@ void DataManager::importItems() {
                     db.writeAccount(acc);
                     Logger::Log("Item importado para a conta " + std::string(ids), "DataManager");
                 } else {
-                     Logger::Log("Nao ha espaco no bau da conta " + std::string(ids), "DataManager", true);
+                     Logger::Log("Nao ha espaco no bau da conta " + std::string(ids), "DataManager");
                 }
                 
                 try { std::filesystem::remove(entry.path()); }
@@ -119,3 +119,14 @@ void DataManager::generateItemLog() {
 void DataManager::generateExpLog() {
     // ... Implementação para criar o log de EXP do dia.
 }
+
+void DataManager::writeGuildInfo() {}
+void DataManager::importDonates(void) {}
+void DataManager::importUsers(void) {}
+void DataManager::updateUserPasswords(void) {}
+void DataManager::loadGuildInfo(void) {}
+void DataManager::resetWeeklyFame(void) {}
+void DataManager::loadRanking(void) {}
+void DataManager::writeRanking(void) {}
+void DataManager::updateConnectionStatus(void) {}
+void DataManager::updateConnectionData(void) {}

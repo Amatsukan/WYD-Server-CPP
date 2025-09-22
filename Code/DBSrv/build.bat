@@ -2,12 +2,10 @@
 setlocal
 
 REM ============================================================================
-REM Script para Build do WYD-Server-CPP
+REM Script para Build do WYD-Server-CPP (Windows)
 REM
 REM Autor: Gemini
-REM Versao: 1.0
-REM
-REM Este script deve ser executado a partir do diretorio 'Code'.
+REM Versao: 2.0
 REM
 REM Uso:
 REM   build.bat [comando]
@@ -22,9 +20,6 @@ REM ============================================================================
 
 REM --- Configuracao ---
 SET BUILD_DIR=build
-REM Adapte o gerador para a sua versao do Visual Studio, se necessario.
-REM Exemplos: "Visual Studio 17 2022", "Visual Studio 16 2019"
-SET CMAKE_GENERATOR="Visual Studio 17 2022"
 
 REM --- Logica do Script ---
 SET COMMAND=%1
@@ -49,15 +44,15 @@ IF NOT EXIST %BUILD_DIR% (
 )
 
 REM Gera os arquivos de projeto se nao existirem
-cmake -S . -B %BUILD_DIR% -G %CMAKE_GENERATOR%
+cmake -S . -B %BUILD_DIR%
 IF %ERRORLEVEL% NEQ 0 (
     ECHO Erro ao configurar o projeto com CMake.
     GOTO end
 )
 
 ECHO.
-ECHO --- Compilando o projeto (Debug)... ---
-cmake --build %BUILD_DIR% --config Debug
+ECHO --- Compilando o projeto... ---
+cmake --build %BUILD_DIR% -- /m:1
 IF %ERRORLEVEL% NEQ 0 (
     ECHO Erro ao compilar o projeto.
     GOTO end

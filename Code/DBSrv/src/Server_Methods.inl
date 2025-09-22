@@ -1,3 +1,6 @@
+#include "log/logger.h"
+#include "Server.h"
+
 // Este arquivo contém a implementação dos métodos da classe Server para manter Server.cpp mais limpo.
 void Server::run() {
     m_isRunning = true;
@@ -77,7 +80,7 @@ void Server::readAdminIPs() {
 }
 bool Server::initializeServerIndex() {
     auto& gameData = m_dataManager->getGameData();
-    BASE_InitializeServerList(gameData.g_pServerList);
+    BASE_InitializeServerList();
     char hostname[256];
     if (gethostname(hostname, sizeof(hostname)) == SOCKET_ERROR) {
         Logger::Log("Falha ao obter o hostname.", "Server", true);
