@@ -16,7 +16,9 @@ public:
     bool start(int userPort, int adminPort);
     void stop();
 
-    void setCallbacks(OnConnectCallback onConnect, OnDisconnectCallback onDisconnect, OnDataReceivedCallback onData);
+    void setUserCallbacks(OnConnectCallback onConnect, OnDisconnectCallback onDisconnect, OnDataReceivedCallback onData);
+    void setAdminCallbacks(OnConnectCallback onConnect, OnDisconnectCallback onDisconnect, OnDataReceivedCallback onData);
+
 
 private:
     void acceptLoop(SOCKET listenSocket, SessionManager& sessionManager);
@@ -33,7 +35,9 @@ private:
     SessionManager& m_userSessions;
     SessionManager& m_adminSessions;
 
-    OnConnectCallback m_onConnect;
+    OnConnectCallback m_onUserConnect;
+    OnConnectCallback m_onAdminConnect;
     OnDisconnectCallback m_onDisconnect;
-    OnDataReceivedCallback m_onDataReceived;
+    OnDataReceivedCallback m_onUserData;
+    OnDataReceivedCallback m_onAdminData
 };

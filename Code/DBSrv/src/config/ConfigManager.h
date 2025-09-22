@@ -1,39 +1,17 @@
 #pragma once
 #include "../common.h"
-
-// Callbacks para o Server orquestrar a lógica
-using OnConnectCallback = std::function<void(int sessionId)>;
-using OnDisconnectCallback = std::function<void(int sessionId)>;
-using OnDataReceivedCallback = std::function<void(int sessionId)>;
-
-class SessionManager; // Forward declaration
-
-class NetworkManager {
+class ConfigManager {
 public:
-    NetworkManager(SessionManager& userSessions, SessionManager& adminSessions);
-    ~NetworkManager();
+bool load(const std::string& filename);
+void save(const std::string& filename);
+int getSapphire() const { return m_sapphire; }
+unsigned short getLastCapsule() const { return m_lastCapsule; }
 
-    bool start(int userPort, int adminPort);
-    void stop();
+void setSapphire(int value) { m_sapphire = value; }
+void setLastCapsule(unsigned short value) { m_lastCapsule = value; }
 
-    void setCallbacks(OnConnectCallback onConnect, OnDisconnectCallback onDisconnect, OnDataReceivedCallback onData);
 
 private:
-    void acceptLoop(SOCKET listenSocket, SessionManager& sessionManager);
-    void clientHandlerLoop(int sessionId, SessionManager& sessionManager);
-
-    SOCKET createUserListenSocket(int port);
-    
-    std::atomic<bool> m_isRunning{false};
-    SOCKET m_userListenSocket = INVALID_SOCKET;
-    SOCKET m_adminListenSocket = INVALID_SOCKET;
-    
-    std::vector<std::thread> m_threads;
-    
-    SessionManager& m_userSessions;
-    SessionManager& m_adminSessions;
-
-    OnConnectCallback m_onConnect;
-    OnDisconnectCallback m_onDisconnect;
-    OnDataReceivedCallback m_onDataReceived;
+int m_sapphire = 8;
+unsigned short m_lastCapsule = 0;
 };
